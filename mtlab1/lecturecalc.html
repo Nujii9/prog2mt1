@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prog 2 - Lecture Prelim Grade Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #d0d0d0;
+        }
+        .container {
+            display: flex;
+            background:rgb(245, 245, 245);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            max-width: 600px;
+        }
+        .result-section {
+            background: #17c3c3;
+            color: white;
+            padding: 20px;
+            border-radius: 10px 0 0 10px;
+            width: 40%;
+            text-align: left;
+        }
+        .input-section {
+            padding: 20px;
+            width: 60%;
+        }
+        input {
+            width: 100%;
+            padding: 8px;
+            margin: 5px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        p {
+            color: black;
+            font-weight: bold;
+        }
+        button {
+            background-color: #17c3c3;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-size: 16px;
+            border-radius: 5px;
+            display: block;
+            margin: 10px auto 0;
+        }
+        button:hover {
+            background-color: #139999;
+        }
+        .grade-info {
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="result-section">
+            <h2>Result</h2>
+            <p>Percentage - <span id="percentage">0</span></p>
+            <p>Grade - <span id="grade">N/A</span></p>
+            <p>GWA - <span id="gpa">N/A</span></p>
+        </div>
+        <div class="input-section">
+            <input type="number" id="examScore" placeholder="Prelim Exam Score">
+            <input type="number" id="essay" placeholder="Essay Score">
+            <input type="number" id="pwm" placeholder="PVM Score">
+            <input type="number" id="javaBasics" placeholder="Java Basics Score">
+            <input type="number" id="introJS" placeholder="Intro to JS Score">
+            <input type="number" id="attendance" placeholder="Attendance (%)">
+            <button id="calculateButton">Show Result</button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            document.getElementById("calculateButton").addEventListener("click", function () {
+                let examScore = parseFloat(document.getElementById("examScore").value);
+                let essay = parseFloat(document.getElementById("essay").value);
+                let pwm = parseFloat(document.getElementById("pwm").value);
+                let javaBasics = parseFloat(document.getElementById("javaBasics").value);
+                let introJS = parseFloat(document.getElementById("introJS").value);
+                let attendance = parseFloat(document.getElementById("attendance").value);
+
+                if (isNaN(examScore) || isNaN(essay) || isNaN(pwm) || isNaN(javaBasics) || isNaN(introJS) || isNaN(attendance)) {
+                    alert("Invalid Input! Please enter numbers.");
+                    return;
+                }
+
+                let quizAverage = (essay + pwm + javaBasics + introJS) / 4;
+                let classStanding = (0.6 * quizAverage) + (0.4 * attendance);
+                let prelimGrade = (0.6 * examScore) + (0.4 * classStanding);
+                let percentage = prelimGrade.toFixed(2);
+                
+                let gpa, grade;
+                if (percentage >= 99) { gpa = 1.0; grade = "Excellent"; }
+                else if (percentage >= 96) { gpa = 1.25; grade = "Superior"; }
+                else if (percentage >= 93) { gpa = 1.5; grade = "Very Good"; }
+                else if (percentage >= 90) { gpa = 1.75; grade = "Good"; }
+                else if (percentage >= 87) { gpa = 2.0; grade = "Meritorious"; }
+                else if (percentage >= 84) { gpa = 2.25; grade = "Very Satisfactory"; }
+                else if (percentage >= 81) { gpa = 2.5; grade = "Satisfactory"; }
+                else if (percentage >= 78) { gpa = 2.75; grade = "Fairly Satisfactory"; }
+                else if (percentage >= 75) { gpa = 3.0; grade = "Passing"; }
+                else { gpa = 5.0; grade = "Failure"; }
+
+                document.getElementById("percentage").innerText = percentage;
+                document.getElementById("grade").innerText = grade;
+                document.getElementById("gpa").innerText = gpa;
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prog 2 - Lab Prelim Grade Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #d0d0d0;
+        }
+        .container {
+            display: flex;
+            background:rgb(245, 245, 245);
+            width: 650px;
+            height: 350px;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            padding: 20px;
+        }
+        .result-panel {
+            background: #17c3c3;
+            color: white;
+            padding: 20px;
+            border-radius: 10px 0 0 10px;
+            width: 40%;
+            text-align: left;
+        }
+        .result-panel h2 {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+        .result-panel p {
+            font-size: 18px;
+            margin: 5px 0;
+        }
+        .input-panel {
+            flex: 1;
+            padding: 35px;
+            background: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        label {
+            font-weight: bold;
+            margin-top: 5px;
+        }
+        input {
+            width: 100%;
+            padding: 2px;
+            margin: 2px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        p {
+            color: black;
+            font-weight: bold;
+        }
+        button {
+            margin-top: 10px;
+            padding: 8px;
+            border: none;
+            background: #007BFF;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <!-- Result Panel -->
+    <div class="result-panel">
+        <h2>Result</h2>
+        <p id="percentage">Percentage: 0</p>
+        <p id="grade">Grade: N/A</p>
+        <p id="gpa">GWA: N/A</p>
+    </div>
+
+    <!-- Input Panel -->
+    <div class="input-panel">
+            <input type="number" id="java1" placeholder="Java 1">
+            <input type="number" id="java2" placeholder="Java 2 Score">
+            <input type="number" id="js1" placeholder="JS1 Score">
+            <input type="number" id="js2" placeholder="JS2 Score">
+            <input type="number" id="mp1" placeholder="MP1 Score">
+            <input type="number" id="mp2" placeholder="MP2 Score">
+            <input type="number" id="mp3" placeholder="MP3 Score">
+            <input type="number" id="attendance" placeholder="Attendance (%)">
+
+        <button onclick="calculateGrade()">Show Result</button>
+    </div>
+</div>
+
+<script>
+function calculateGrade() {
+    // Get user inputs
+    let java1 = parseFloat(document.getElementById("java1").value) || 0;
+    let java2 = parseFloat(document.getElementById("java2").value) || 0;
+    let js1 = parseFloat(document.getElementById("js1").value) || 0;
+    let js2 = parseFloat(document.getElementById("js2").value) || 0;
+    let mp1 = parseFloat(document.getElementById("mp1").value) || 0;
+    let mp2 = parseFloat(document.getElementById("mp2").value) || 0;
+    let mp3 = parseFloat(document.getElementById("mp3").value) || 0;
+    let mp3doc = parseFloat(document.getElementById("mp3doc").value) || 0;
+    let attendance = parseFloat(document.getElementById("attendance").value) || 100;
+
+    // Prelim Exam Calculation
+    let prelimExam = (0.2 * java1) + (0.3 * java2) + (0.2 * js1) + (0.3 * js2);
+
+    // Lab Work Calculation
+    let labWork = (mp1 + mp2 + mp3 + mp3doc) / 4;
+
+    // Prelim Class Standing Calculation
+    let prelimClassStanding = (0.6 * labWork) + (0.4 * attendance);
+
+    // Prelim Grade Calculation
+    let prelimGrade = (0.6 * prelimExam) + (0.4 * prelimClassStanding);
+    let percentage = prelimGrade.toFixed(2);
+
+    // Grade and GPA Conversion
+    let grade, gpa;
+    if (prelimGrade >= 99) { gpa = 1.0; grade = "Excellent"; }
+    else if (prelimGrade >= 96) { gpa = 1.25; grade = "Superior"; }
+    else if (prelimGrade >= 93) { gpa = 1.5; grade = "Very Good"; }
+    else if (prelimGrade >= 90) { gpa = 1.75; grade = "Good"; }
+    else if (prelimGrade >= 87) { gpa = 2.0; grade = "Meritorious"; }
+    else if (prelimGrade >= 84) { gpa = 2.25; grade = "Very Satisfactory"; }
+    else if (prelimGrade >= 81) { gpa = 2.5; grade = "Satisfactory"; }
+    else if (prelimGrade >= 78) { gpa = 2.75; grade = "Fairly Satisfactory"; }
+    else if (prelimGrade >= 75) { gpa = 3.0; grade = "Passing"; }
+    else { gpa = 5.0; grade = "Failure"; }
+
+    // Display Results
+    document.getElementById("percentage").textContent = "Percentage: " + percentage;
+    document.getElementById("grade").textContent = "Grade: " + grade;
+    document.getElementById("gpa").textContent = "GPA: " + gpa;
+}
+</script>
+
+</body>
+</html>
