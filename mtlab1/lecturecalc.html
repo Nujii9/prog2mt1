@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Programming - Lec Prelim Grade Calculator</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #282c34;
+      color: white;
+      text-align: center;
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      width: 90%;
+      max-width: 600px;
+      margin: 20px auto;
+      padding: 20px;
+      background: #3c3f41;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    }
+
+    .form-group {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin: 10px 0;
+    }
+
+    .form-group label {
+      flex: 1;
+      text-align: left;
+    }
+
+    .form-group input {
+      flex: 1;
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      text-align: center;
+    }
+
+    .error {
+      border-color: red;
+    }
+
+    .attendance-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+      margin: 10px 0;
+    }
+
+    .result {
+      margin-top: 20px;
+      padding: 10px;
+      background: #505356;
+      border-radius: 5px;
+    }
+
+    .btn {
+      width: 48%;
+      padding: 10px;
+      margin: 5px;
+      border: none;
+      cursor: pointer;
+      border-radius: 5px;
+      font-weight: bold;
+    }
+
+    .btn-calculate {
+      background: #64b5f6;
+      color: black;
+    }
+
+    .btn-reset {
+      background: #ff5252;
+      color: white;
+    }
+
+    #formulaBox {
+      display: none;
+      margin-top: 20px;
+      padding: 15px;
+      background-color: #3c3f41;
+      border-radius: 10px;
+      border: 1px solid white;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <h2>Programming - Lec Prelim Grade Calculator</h2>
+
+    <!-- Input Fields -->
+    <div class="form-group">
+      <label for="examScore">Prelim Exam Score (0-100):</label>
+      <input type="number" id="examScore" min="0" max="100">
+    </div>
+    <div class="form-group">
+      <label for="essay">Essay Score (0-100):</label>
+      <input type="number" id="essay" min="0" max="100">
+    </div>
+    <div class="form-group">
+      <label for="pvm">PVM Score (max 60):</label>
+      <input type="number" id="pvm" min="0" max="60">
+    </div>
+    <div class="form-group">
+      <label for="javaBasics">Java Basics Score (max 40):</label>
+      <input type="number" id="javaBasics" min="0" max="40">
+    </div>
+    <div class="form-group">
+      <label for="introJS">Intro to JS Score (max 40):</label>
+      <input type="number" id="introJS" min="0" max="40">
+    </div>
+
+    <!-- Attendance -->
+    <h3>Attendance (Check attended dates)</h3>
+    <div class="attendance-container">
+      <label><input type="checkbox" class="attendance"> Jan 20</label>
+      <label><input type="checkbox" class="attendance"> Jan 27</label>
+      <label><input type="checkbox" class="attendance"> Feb 3</label>
+      <label><input type="checkbox" class="attendance"> Feb 10</label>
+      <label><input type="checkbox" class="attendance"> Feb 17</label>
+    </div>
+
+    <!-- Buttons -->
+    <button class="btn btn-calculate" onclick="calculateGrade()">Show Result</button>
+    <button class="btn btn-reset" onclick="resetFields()">Reset</button>
+    <button class="btn btn-calculate" onclick="toggleFormula()">Show Formula</button>
+
+    <!-- Results Section -->
+    <div class="result">
+      <h3>Results</h3>
+      <p id="percentage">Percentage: 0%</p>
+      <p id="grade">Grade: N/A</p>
+      <p id="gpa">GPA: N/A</p>
+    </div>
+
+    <!-- Formula Box -->
+    <div id="formulaBox">
+      <h3>Grade Calculation Formula</h3>
+      <p>Prelim Exam: <strong>0.6 × Exam Score</strong></p>
+      <p>Class Standing: <strong>0.6 × Quiz Average + 0.4 × Attendance</strong></p>
+      <p>Final Grade: <strong>0.6 × Exam Score + 0.4 × Class Standing</strong></p>
+    </div>
+  </div>
+
+  <script>
+    function calculateGrade() {
+      const examScore = parseFloat(document.getElementById("examScore").value);
+      const essay = parseFloat(document.getElementById("essay").value);
+      const pvm = parseFloat(document.getElementById("pvm").value);
+      const javaBasics = parseFloat(document.getElementById("javaBasics").value);
+      const introJS = parseFloat(document.getElementById("introJS").value);
+
+      const inputs = [examScore, essay, pvm, javaBasics, introJS];
+      const maxValues = [100, 100, 60, 40, 40];
+      const fields = ['examScore', 'essay', 'pvm', 'javaBasics', 'introJS'];
+
+      let hasError = false;
+      inputs.forEach((value, index) => {
+        const inputField = document.getElementById(fields[index]);
+        if (isNaN(value) || value < 0 || value > maxValues[index]) {
+          inputField.classList.add('error');
+          hasError = true;
+        } else {
+          inputField.classList.remove('error');
+        }
+      });
+
+      if (hasError) {
+        alert("Invalid input detected. Please enter valid scores.");
+        return;
+      }
+
+      // Attendance Check
+      const attended = document.querySelectorAll('.attendance:checked').length;
+      const absences = 5 - attended;
+      if (absences >= 3) {
+        document.getElementById("percentage").textContent = `Percentage: 0%`;
+        document.getElementById("grade").textContent = `Grade: Failure`;
+        document.getElementById("gpa").textContent = `GPA: 5.0`;
+        return;
+      }
+
+      const attendanceScore = 100 - (10 * absences);
+      const normalizedPVM = (pvm / 60) * 100;
+      const normalizedJavaBasics = (javaBasics / 40) * 100;
+      const normalizedIntroJS = (introJS / 40) * 100;
+
+      const quizAverage = (essay + normalizedPVM + normalizedJavaBasics + normalizedIntroJS) / 4;
+      const classStanding = (0.6 * quizAverage) + (0.4 * attendanceScore);
+      const finalGrade = (0.6 * examScore) + (0.4 * classStanding);
+
+      const gradeMapping = [
+        [99, 1.0, "Excellent"],
+        [96, 1.25, "Superior"],
+        [93, 1.5, "Very Good"],
+        [90, 1.75, "Good"],
+        [87, 2.0, "Meritorious"],
+        [84, 2.25, "Very Satisfactory"],
+        [81, 2.5, "Satisfactory"],
+        [78, 2.75, "Fairly Satisfactory"],
+        [75, 3.0, "Passing"],
+        [0, 5.0, "Failure"]
+      ];
+      const [gpa, grade] = gradeMapping.find(([min]) => finalGrade >= min).slice(1);
+
+      document.getElementById("percentage").textContent = `Percentage: ${finalGrade.toFixed(2)}%`;
+      document.getElementById("grade").textContent = `Grade: ${grade}`;
+      document.getElementById("gpa").textContent = `GPA: ${gpa}`;
+    }
+
+    function toggleFormula() {
+      const formulaBox = document.getElementById("formulaBox");
+      formulaBox.style.display = formulaBox.style.display === "block" ? "none" : "block";
+    }
+
+    function resetFields() {
+      location.reload();
+    }
+  </script>
+</body>
+
+</html>

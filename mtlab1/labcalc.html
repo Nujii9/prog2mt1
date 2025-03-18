@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Programming - Lab Prelim Grade Calculator</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" />
+  <style>
+    body {
+      background-color: #282c34;
+      color: white;
+      text-align: center;
+      font-family: Arial, sans-serif;
+    }
+
+    .container {
+      max-width: 400px;
+      margin: 20px auto;
+      padding: 15px;
+      background-color: #3c3f41;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+      text-align: left;
+    }
+
+    .form-group {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 8px;
+    }
+
+    .form-label {
+      font-weight: bold;
+      font-size: 0.9em;
+      width: 50%;
+    }
+
+    .form-control {
+      width: 45%;
+      font-size: 0.9em;
+      padding: 5px;
+    }
+
+    .btn {
+      font-size: 1em;
+      padding: 8px;
+      margin-top: 8px;
+    }
+
+    .result {
+      font-size: 1em;
+      margin-top: 10px;
+    }
+
+    .formula-box {
+      background-color: #232629;
+      padding: 10px;
+      border-radius: 8px;
+      margin-top: 10px;
+      display: none;
+    }
+
+    .error {
+      border: 2px solid red;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <h4 class="text-center">Programming - Lab Prelim Grade Calculator</h4>
+
+    <!-- Inputs Section -->
+    <div class="form-group">
+      <label class="form-label">Java 1:</label>
+      <input type="number" id="java1" class="form-control">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Java 2:</label>
+      <input type="number" id="java2" class="form-control">
+    </div>
+    <div class="form-group">
+      <label class="form-label">JS 1:</label>
+      <input type="number" id="js1" class="form-control">
+    </div>
+    <div class="form-group">
+      <label class="form-label">JS 2:</label>
+      <input type="number" id="js2" class="form-control">
+    </div>
+    <div class="form-group">
+      <label class="form-label">MP1:</label>
+      <input type="number" id="mp1" class="form-control">
+    </div>
+    <div class="form-group">
+      <label class="form-label">MP2:</label>
+      <input type="number" id="mp2" class="form-control">
+    </div>
+    <div class="form-group">
+      <label class="form-label">MP3:</label>
+      <input type="number" id="mp3" class="form-control">
+    </div>
+    <div class="form-group">
+      <label class="form-label">MP3 Docu:</label>
+      <input type="number" id="mp3Docu" class="form-control">
+    </div>
+
+    <!-- Attendance Section -->
+    <h5 class="text-center mt-3">Attendance</h5>
+    <div id="attendance" class="text-center">
+      <input type="checkbox" id="att1"> Jan 20
+      <input type="checkbox" id="att2"> Jan 27
+      <input type="checkbox" id="att3"> Feb 3
+      <input type="checkbox" id="att4"> Feb 10
+      <input type="checkbox" id="att5"> Feb 17
+    </div>
+
+    <!-- Buttons -->
+    <button class="btn btn-primary w-100" onclick="calculateGrade()">Show Result</button>
+    <button class="btn btn-danger w-100" onclick="resetFields()">Reset</button>
+    <button class="btn btn-info w-100" id="formulaBtn" onclick="toggleFormula()">Show Formula</button>
+
+    <!-- Formula Box -->
+    <div class="formula-box" id="formulaBox">
+      <h6 class="text-center">Formula for Prelim Grade</h6>
+      <p><strong>Prelim Exam:</strong> (0.2 × Java 1) + (0.3 × Java 2) + (0.2 × JS 1) + (0.3 × JS 2)</p>
+      <p><strong>Lab Work:</strong> (MP1 + MP2 + MP3 + MP3 Docu) / 4</p>
+      <p><strong>Class Standing:</strong> (0.6 × Lab Work) + (0.4 × Attendance)</p>
+      <p><strong>Prelim Grade:</strong> (0.6 × Prelim Exam) + (0.4 × Class Standing)</p>
+    </div>
+
+    <!-- Result Section -->
+    <div class="result text-center">
+      <p id="percentage">Percentage: 0</p>
+      <p id="grade">Grade: N/A</p>
+      <p id="gpa">GPA: N/A</p>
+    </div>
+  </div>
+
+  <!-- JavaScript -->
+  <script>
+    function toggleFormula() {
+      const formulaBox = document.getElementById("formulaBox");
+      const formulaBtn = document.getElementById("formulaBtn");
+
+      if (formulaBox.style.display === "block") {
+        formulaBox.style.display = "none";
+        formulaBtn.textContent = "Show Formula";
+      } else {
+        formulaBox.style.display = "block";
+        formulaBtn.textContent = "Hide Formula";
+      }
+    }
+
+    function calculateGrade() {
+      const fields = ["java1", "java2", "js1", "js2", "mp1", "mp2", "mp3", "mp3Docu"];
+      let invalidInputs = false;
+
+      let scores = fields.map(field => {
+        const input = document.getElementById(field);
+        const score = parseFloat(input.value) || 0;
+        if (score < 0 || score > 100) {
+          input.classList.add('error');
+          invalidInputs = true;
+        } else {
+          input.classList.remove('error');
+        }
+        return score;
+      });
+
+      if (invalidInputs) {
+        alert("Invalid input detected. Scores must be between 0 and 100.");
+        return;
+      }
+
+      // Calculate grades
+      let prelimExam = (0.2 * scores[0]) + (0.3 * scores[1]) + (0.2 * scores[2]) + (0.3 * scores[3]);
+      let labWork = (scores[4] + scores[5] + scores[6] + scores[7]) / 4;
+
+      let attended = Array.from({ length: 5 }, (_, i) => document.getElementById(`att${i + 1}`).checked).filter(Boolean).length;
+      let absences = 5 - attended;
+      let attendance = 100 - (10 * absences);
+      if (absences >= 3) {
+        document.getElementById("percentage").textContent = `Percentage: 0%`;
+        document.getElementById("grade").textContent = `Grade: Failure`;
+        document.getElementById("gpa").textContent = `GPA: 5.0`;
+        return;
+      }      
+
+      let classStanding = (0.6 * labWork) + (0.4 * attendance);
+      let prelimGrade = (0.6 * prelimExam) + (0.4 * classStanding);
+
+      let gpa, grade;
+      if (prelimGrade >= 99) { gpa = 1.0; grade = "Excellent"; }
+      else if (prelimGrade >= 96) { gpa = 1.25; grade = "Superior"; }
+      else if (prelimGrade >= 93) { gpa = 1.5; grade = "Very Good"; }
+      else if (prelimGrade >= 90) { gpa = 1.75; grade = "Good"; }
+      else if (prelimGrade >= 87) { gpa = 2.0; grade = "Meritorious"; }
+      else if (prelimGrade >= 84) { gpa = 2.25; grade = "Very Satisfactory"; }
+      else if (prelimGrade >= 81) { gpa = 2.5; grade = "Satisfactory"; }
+      else if (prelimGrade >= 78) { gpa = 2.75; grade = "Fairly Satisfactory"; }
+      else if (prelimGrade >= 75) { gpa = 3.0; grade = "Passing"; }
+      else { gpa = 5.0; grade = "Failure"; }
+
+      document.getElementById("percentage").innerText = `Percentage: ${prelimGrade.toFixed(2)}`;
+      document.getElementById("grade").innerText = `Grade: ${grade}`;
+      document.getElementById("gpa").innerText = `GPA: ${gpa}`;
+    }
+
+    function resetFields() {
+      location.reload();
+    }
+  </script>
+</body>
+
+</html>
